@@ -3,83 +3,120 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clcarre <clcarrer@student.42madrid.com>    +#+  +:+       +#+        */
+/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:21:32 by clcarre           #+#    #+#             */
-/*   Updated: 2022/07/13 16:05:37 by clcarre          ###   ########.fr       */
+/*   Updated: 2022/08/20 20:49:30 by chloeplatt       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-#include "libft/ft_atoi.c"
+/*
+sa : swap a / sb : swap b / ss : swap a & swap b
+	1	->	3
+	3	->	1
+	2		2
+    
+pa : push a to b / pb : push b to a
+	1	->				
+	3				2	<-	2
+	2		1		1		3
 
-void	insert_end_node(t_node **list, int value)
+ra : rotate a /  rb : rotate b / rr : rotate a y rotate b al mismo tiempo
+	1	->	3
+	3	->	2
+	2		1
+
+rra : reverse rotate a / rrb : reverse rotate b / rrr : a y b al mismo tiempo
+	1	->	2
+	3	->	1
+	2		3
+*/
+
+void    sort_numbers(t_node **list, int i)
 {
-	t_node	*new_node;
 	t_node	*curr;
+	t_node	*aux;
 
-	new_node = malloc(sizeof(t_node));
-	if (!new_node)
-		perror("malloc error");
-	new_node->x = value;
-	new_node->next = NULL;
-	new_node->prev = NULL;
-	if (*list == NULL)
-		*list = new_node;
-	else
+	curr = *list;
+	while (i > 0)
 	{
-		curr = *list;
-		while (curr->next != NULL)
+		while (curr->p != 0)
 			curr = curr->next;
-		curr->next = new_node;
-		new_node->prev = curr;
+		aux = curr->next;
+		while (aux != NULL)
+		{
+			if ((curr->x < aux->x) && (aux->p != 0))
+				curr = aux;
+			if (aux->next == NULL)
+			{
+				curr->p = i;
+				curr = *list;
+				i--;
+			}
+			aux = aux->next;
+		}
 	}
 }
 
-void	swap(t_node **list)
-{
-	int	value;
+// void	push_swap(t_push p, t_node **list_a, t_node **list_b, t_node *last)
+// {
+// 	t_node	*curr;
 
-	if (*list == NULL || (*list)->next == NULL)
-		exit (0);
-	value = (*list)->x;
-	(*list)->x = (*list)->next->x;
-	(*list)->next->x = value;
-}
-
-void	rotate(t_node **list)
-{
-	t_node	*curr;
-	int		value;
-
-	if (*list == NULL || (*list)->next == NULL)
-		exit (0);
-	value = (*list)->x;
-	curr = *list;
-	*list = (*list)->next;
-	free(curr);
-	insert_end_node(list, value);
-}
+// 	p.i = 0;
+// 	curr = *list_a;
+// 	while (curr != NULL)
+// 	{
+// 		if (((curr->x >> p.i) & 1) == 1)
+// 		{
+// 			if (((last->x >> p.i) & 1) == 0)
+// 				reverse_rotate(list_a);
+// 			else if (((curr->next->x >> p.i) & 1) == 0)
+// 				swap(list_a);
+// 			else
+// 				rotate(list_a);
+// 		}
+// 		if (((curr->x >> p.i) & 1) == 0)
+// 			push(list_a, list_b);
+// 		else
+// 			curr = curr->next;
+// 	}
+// }
 
 int	main(int argc, char	**argv, char **envp)
 {
 	t_node	*list_a;
 	t_node	*list_b;
 	t_node	*curr;
-	int		i;
+	t_node	*last;
+	t_push	p;
 
 	list_a = NULL;
 	list_b = NULL;
-	i = 1;
-	while (argv[i])
-		insert_end_node(&list_a, ft_atoi(argv[i++]));
-	swap(&list_a);
-	rotate(&list_a);
+	p.i = 1;
+	while (argv[p.i])
+		insert_end_node(&list_a, ft_atoi(argv[p.i++]));
+	if (p.i <= 1)
+		return (0);
+	sort_numbers(&list_a, (p.i - 2));
+	last = list_a;
+	while (last->next != NULL)
+		last = last->next;
+	// push_swap(p, &list_a, &list_b, last);
 	curr = list_a;
 	while (curr != NULL)
 	{
-		printf("%d\n", curr->x);
+		printf("A %d\n", curr->x);
 		curr = curr->next;
 	}
+	curr = list_a;
+	printf("\n");
+	while (curr != NULL)
+	{
+		printf("B %d\n", curr->p);
+		curr = curr->next;
+	}
+	free_node(&list_a);
+	free_node(&list_b);
 	return (0);
 }
