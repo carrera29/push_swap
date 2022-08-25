@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
+/*   By: clcarre <clcarrer@student.42madrid.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:21:32 by clcarre           #+#    #+#             */
-/*   Updated: 2022/08/20 20:49:30 by chloeplatt       ###   ########.fr       */
+/*   Updated: 2022/08/25 14:09:00 by clcarre          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,31 @@ rra : reverse rotate a / rrb : reverse rotate b / rrr : a y b al mismo tiempo
 	2		3
 */
 
-void    sort_numbers(t_node **list, int i)
+int	check_numbers(t_node **list)
+{
+	t_node	*curr;
+	t_node	*aux;
+	int		unsorted;
+
+	unsorted = 0;
+	curr = *list;
+	while (curr != NULL)
+	{	
+		aux = curr->next;
+		while (aux != NULL)
+		{
+			if (curr->x == aux->x)
+				return (0);
+			if (curr->x > aux->x)
+				unsorted = 1;
+			aux = aux->next;
+		}
+		curr = curr->next;
+	}
+	return (unsorted);
+}
+
+void	simplify_num(int i, t_node **list)
 {
 	t_node	*curr;
 	t_node	*aux;
@@ -41,47 +65,83 @@ void    sort_numbers(t_node **list, int i)
 	curr = *list;
 	while (i > 0)
 	{
-		while (curr->p != 0)
+		while (curr->p != 0 && curr != NULL)
 			curr = curr->next;
 		aux = curr->next;
-		while (aux != NULL)
-		{
-			if ((curr->x < aux->x) && (aux->p != 0))
-				curr = aux;
-			if (aux->next == NULL)
-			{
-				curr->p = i;
-				curr = *list;
-				i--;
-			}
+		while (((curr->x > aux->x) || (aux->p != 0)) && aux->next != NULL)
 			aux = aux->next;
+		if (aux->next != NULL)
+			curr = aux;
+		else
+		{
+			if (aux->x > curr->x && aux->p == 0)
+				curr = aux;
+			curr->p = i;
+			i--;
+			curr = *list;
 		}
 	}
 }
 
-// void	push_swap(t_push p, t_node **list_a, t_node **list_b, t_node *last)
-// {
-// 	t_node	*curr;
+void	push_swap(int i, t_node **list_a, t_node **list_b, t_node *last)
+{
+	t_node	*curr;
 
-// 	p.i = 0;
-// 	curr = *list_a;
-// 	while (curr != NULL)
-// 	{
-// 		if (((curr->x >> p.i) & 1) == 1)
-// 		{
-// 			if (((last->x >> p.i) & 1) == 0)
-// 				reverse_rotate(list_a);
-// 			else if (((curr->next->x >> p.i) & 1) == 0)
-// 				swap(list_a);
-// 			else
-// 				rotate(list_a);
-// 		}
-// 		if (((curr->x >> p.i) & 1) == 0)
-// 			push(list_a, list_b);
-// 		else
-// 			curr = curr->next;
-// 	}
-// }
+	curr = *list_a;
+	if (((curr->p >> i) & 1) == 1)
+	{
+		if (((((last)->p >> i) & 1) == 0) || (((curr->next->p >> i) & 1) == 0))
+		{
+			while (((((last)->p >> i) & 1) == 0)
+				|| (((curr->next->p >> i) & 1) == 0))
+				i++;
+			if (((curr->next->p >> (i - 1)) & 1) == 0)
+			{
+				printf("swap\n");
+				swap(list_a);
+			}
+			else
+			{
+				printf("reverse rotate\n");
+				reverse_rotate(list_a);
+			}
+		}
+		else
+		{
+			printf("rotate\n");
+			rotate(list_a);
+		}
+		curr = *list_a;
+	}
+	if (((curr->p >> i) & 1) == 0)
+	{
+		printf("push b\n");
+		push(list_a, list_b);
+	}
+}
+
+void	sort_list(t_node **list_a, t_node **list_b, t_node *last)
+{
+	t_node	*curr;
+	int		i;
+	int		bit;
+
+	i = 0;
+	while (i < 1)
+	{
+		curr = *list_a;
+		bit = 1;
+		while (curr != NULL)
+		{
+			if (((curr->p >> i) & 1) == 0)
+				bit++;
+			curr = curr->next;
+		}
+		while (bit-- != 0)
+			push_swap(i, list_a, list_b, last);
+		i++;
+	}
+}
 
 int	main(int argc, char	**argv, char **envp)
 {
@@ -89,31 +149,33 @@ int	main(int argc, char	**argv, char **envp)
 	t_node	*list_b;
 	t_node	*curr;
 	t_node	*last;
-	t_push	p;
+	int		i;
 
 	list_a = NULL;
 	list_b = NULL;
-	p.i = 1;
-	while (argv[p.i])
-		insert_end_node(&list_a, ft_atoi(argv[p.i++]));
-	if (p.i <= 1)
+	if (argc < 3)
 		return (0);
-	sort_numbers(&list_a, (p.i - 2));
+	i = 1;
+	while (argv[i])
+		insert_end_node(&list_a, ft_atoi(argv[i++]), 0);
+	if ((check_numbers(&list_a) == 0))
+		return (0);
+	simplify_num((i - 2), &list_a);
 	last = list_a;
 	while (last->next != NULL)
 		last = last->next;
-	// push_swap(p, &list_a, &list_b, last);
+	sort_list(&list_a, &list_b, last);
 	curr = list_a;
 	while (curr != NULL)
 	{
 		printf("A %d\n", curr->x);
 		curr = curr->next;
 	}
-	curr = list_a;
 	printf("\n");
+	curr = list_b;
 	while (curr != NULL)
 	{
-		printf("B %d\n", curr->p);
+		printf("B %d\n", curr->x);
 		curr = curr->next;
 	}
 	free_node(&list_a);
