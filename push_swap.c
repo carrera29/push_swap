@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clcarre <clcarrer@student.42madrid.com>    +#+  +:+       +#+        */
+/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:21:32 by clcarre           #+#    #+#             */
-/*   Updated: 2022/08/25 14:29:53 by clcarre          ###   ########.fr       */
+/*   Updated: 2022/08/31 17:26:00 by chloeplatt       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,66 +83,69 @@ void	simplify_num(int i, t_node **list)
 	}
 }
 
-void	push_swap(int i, t_node **list_a, t_node **list_b, t_node *last)
+void	sort_bits(int i, t_node **list_a, t_node **list_b, t_node **last)
 {
 	t_node	*curr;
 
 	curr = *list_a;
-	if (((curr->p >> i) & 1) == 1)
+	printf("valor de curr es %d\n", curr->p);
+	printf("valor de last es %d\n", (*last)->p);
+	while (((curr->p >> i) & 1) == 1)
 	{
-		if (((((last)->p >> i) & 1) == 0) || (((curr->next->p >> i) & 1) == 0))
+		if (((((curr->next->p >> i) & 1) == 0) && ((((*last)->p >> i) & 1) == 0) &&
+			(curr->next->p < (*last)->p)) ||
+				((((curr->next->p >> i) & 1) == 0) && ((((*last)->p >> i) & 1) == 1)))
 		{
-			while (((((last)->p >> i) & 1) == 0)
-				&& (((curr->next->p >> i) & 1) == 0))
-				i++;
-			if ((((last)->p >> (i - 1)) & 1) == 0)
-			{
-				printf("reverse rotate\n");
-				reverse_rotate(list_a);
-				curr = *list_a;
-			}
-			else
-			{
-				printf("swap\n");
-				swap(list_a);
-			}
+			printf("swap %d\n", curr->next->p);
+			swap(list_a);
 		}
-		else
+		else if (((((curr->next->p >> i) & 1) == 0) && ((((*last)->p >> i) & 1) == 0) &&
+			(curr->next->p > (*last)->p)) ||
+				((((curr->next->p >> i) & 1) == 1) && ((((*last)->p >> i) & 1) == 0)))
+		{
+			printf("reverse rotate %d\n", (*last)->p);
+			reverse_rotate(list_a, last);
+		}
+		else if ((((curr->next->p >> i) & 1) == 1) && ((((*last)->p >> i) & 1) == 1))
 		{
 			printf("rotate\n");
 			rotate(list_a);
 		}
+		curr = *list_a;
+		printf("valor de curr es %d\n", curr->p);
 	}
-	if (((curr->p >> i) & 1) == 0)
-	{
-		printf("push b\n");
-		push(list_a, list_b);
-	}
+	printf("push %d to B\n", curr->p);
+	push(list_a, list_b);
 }
 
-void	sort_list(t_node **list_a, t_node **list_b, t_node *last)
+void	push_swap(t_node **list_a, t_node **list_b, t_node **last)
 {
 	t_node	*curr;
 	int		i;
-	int		bit;
+	int		n_zeros;
 
 	i = 0;
 	while (i < 1)
 	{
 		curr = *list_a;
-		bit = 0;
+		n_zeros = 0;
 		while (curr != NULL)
 		{
 			if (((curr->p >> i) & 1) == 0)
-				bit++;
+				n_zeros++;
 			curr = curr->next;
 		}
-		printf("numero de bits %d\n", bit);
-		while (bit-- != 0)
+		printf("\nel numero de zeros es %d\n", n_zeros);
+		while (n_zeros != 0)
 		{
-			printf("bit = %d\n", bit);
-			push_swap(i, list_a, list_b, last);
+			printf("\nbit = %d\n", n_zeros);
+			sort_bits(i, list_a, list_b, last);
+			n_zeros--;
 		}
+		curr = *list_a;
+		printf("curr es %d\n", curr->p);
+		push(list_a, list_b);
+		printf("curr es %d\n", curr->p);
 		i++;
 	}
 }
@@ -168,7 +171,7 @@ int	main(int argc, char	**argv, char **envp)
 	last = list_a;
 	while (last->next != NULL)
 		last = last->next;
-	sort_list(&list_a, &list_b, last);
+	push_swap(&list_a, &list_b, &last);
 	curr = list_a;
 	while (curr != NULL)
 	{

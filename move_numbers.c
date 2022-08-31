@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   move_numbers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clcarre <clcarrer@student.42madrid.com>    +#+  +:+       +#+        */
+/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 16:31:48 by clcarre           #+#    #+#             */
-/*   Updated: 2022/08/25 12:13:20 by clcarre          ###   ########.fr       */
+/*   Updated: 2022/08/31 17:14:33 by chloeplatt       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ void	insert_beginning_node(t_node **list, int value, int position)
 	new_node->p = position;
 	new_node->prev = NULL;
 	new_node->next = *list;
-	if (new_node->next != NULL)
-		(*list)->next->prev = new_node;
+	if ((*list) != NULL)
+		(*list)->prev = new_node;
 	*list = new_node;
 }
 
@@ -99,27 +99,23 @@ void	rotate(t_node **list)
 	insert_end_node(list, value, position);
 }
 
-void	reverse_rotate(t_node **list)
+void	reverse_rotate(t_node **list, t_node **last)
 {
 	t_node	*curr;
 	t_node	*aux;
 	int		value;
 	int		position;
 
-	curr = malloc(sizeof(t_node));
-	aux = malloc(sizeof(t_node));
-	if (!aux || !curr || *list == NULL || (*list)->next == NULL)
+	if (!aux || *list == NULL || *last == NULL || (*list)->next == NULL)
 		exit (0);
-	curr = *list;
-	while (curr->next != NULL)
-		curr = curr->next;
-	value = curr->x;
-	position = curr->p;
-	aux = curr;
-	curr = curr->prev;
-	curr->next = NULL;
-	free(aux);
+	value = (*last)->x;
+	position = (*last)->p;
+	aux = *last;
+	if ((*last)->prev != NULL)
+		*last = (*last)->prev;
+	(*last)->next = NULL;
 	insert_beginning_node(list, value, position);
+	free(aux);
 }
 
 void	push(t_node **pusher, t_node **to_list)
@@ -135,6 +131,8 @@ void	push(t_node **pusher, t_node **to_list)
 	position = (*pusher)->p;
 	aux = *pusher;
 	*pusher = (*pusher)->next;
+	if ((*pusher) != NULL)
+		(*pusher)->prev = NULL;
 	insert_beginning_node(to_list, value, position);
 	free(aux);
 }
