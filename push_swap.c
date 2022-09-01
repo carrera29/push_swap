@@ -6,7 +6,7 @@
 /*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:21:32 by clcarre           #+#    #+#             */
-/*   Updated: 2022/08/31 17:26:00 by chloeplatt       ###   ########.fr       */
+/*   Updated: 2022/09/01 12:23:55 by chloeplatt       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,8 @@ void	sort_bits(int i, t_node **list_a, t_node **list_b, t_node **last)
 	t_node	*curr;
 
 	curr = *list_a;
-	printf("valor de curr es %d\n", curr->p);
-	printf("valor de last es %d\n", (*last)->p);
+	printf("curr es %d\n", curr->p);
+	printf("last es %d\n", (*last)->p);
 	while (((curr->p >> i) & 1) == 1)
 	{
 		if (((((curr->next->p >> i) & 1) == 0) && ((((*last)->p >> i) & 1) == 0) &&
@@ -106,13 +106,13 @@ void	sort_bits(int i, t_node **list_a, t_node **list_b, t_node **last)
 			printf("reverse rotate %d\n", (*last)->p);
 			reverse_rotate(list_a, last);
 		}
-		else if ((((curr->next->p >> i) & 1) == 1) && ((((*last)->p >> i) & 1) == 1))
+		else
 		{
-			printf("rotate\n");
-			rotate(list_a);
+			rotate(list_a, last);
+			curr = *list_a;
+			printf("rotate -> ahora curr es %d\n", curr->p);
 		}
 		curr = *list_a;
-		printf("valor de curr es %d\n", curr->p);
 	}
 	printf("push %d to B\n", curr->p);
 	push(list_a, list_b);
@@ -125,7 +125,7 @@ void	push_swap(t_node **list_a, t_node **list_b, t_node **last)
 	int		n_zeros;
 
 	i = 0;
-	while (i < 1)
+	while (i < 32)
 	{
 		curr = *list_a;
 		n_zeros = 0;
@@ -135,17 +135,21 @@ void	push_swap(t_node **list_a, t_node **list_b, t_node **last)
 				n_zeros++;
 			curr = curr->next;
 		}
-		printf("\nel numero de zeros es %d\n", n_zeros);
 		while (n_zeros != 0)
 		{
-			printf("\nbit = %d\n", n_zeros);
+			printf("\nPASO %d\n", n_zeros);
 			sort_bits(i, list_a, list_b, last);
 			n_zeros--;
 		}
-		curr = *list_a;
-		printf("curr es %d\n", curr->p);
-		push(list_a, list_b);
-		printf("curr es %d\n", curr->p);
+		curr = *list_b;
+		printf("\n");
+		while (curr != NULL)
+		{
+			push(list_b, list_a);
+			printf("%d a A\n", curr->p);
+			curr = curr->next;
+		}
+		printf("\n");
 		i++;
 	}
 }

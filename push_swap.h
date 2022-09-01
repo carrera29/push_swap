@@ -6,7 +6,7 @@
 /*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:30:41 by clcarre           #+#    #+#             */
-/*   Updated: 2022/08/31 16:44:50 by chloeplatt       ###   ########.fr       */
+/*   Updated: 2022/09/01 11:42:32 by chloeplatt       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	free_node(t_node **list);
 void	insert_end_node(t_node **list, int value, int position);
 void	insert_beginning_node(t_node **list, int value, int position);
 void	swap(t_node **list);
-void	rotate(t_node **list);
+void	rotate(t_node **list, t_node **last);
 void	reverse_rotate(t_node **list, t_node **last);
 void	push(t_node **pusher, t_node **to_list);
 

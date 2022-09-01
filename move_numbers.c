@@ -6,7 +6,7 @@
 /*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 16:31:48 by clcarre           #+#    #+#             */
-/*   Updated: 2022/08/31 17:14:33 by chloeplatt       ###   ########.fr       */
+/*   Updated: 2022/09/01 11:48:06 by chloeplatt       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,20 +83,25 @@ void	swap(t_node **list)
 	(*list)->next->p = value;
 }
 
-void	rotate(t_node **list)
+void	rotate(t_node **list, t_node **last)
 {
-	t_node	*curr;
+	t_node	*aux;
 	int		value;
 	int		position;
 
-	if (*list == NULL || (*list)->next == NULL)
+	aux = malloc(sizeof(t_node));
+	if (*list == NULL || (*list)->next == NULL || *last == NULL)
 		exit (0);
 	value = (*list)->x;
 	position = (*list)->p;
-	curr = *list;
+	aux = *list;
 	*list = (*list)->next;
-	free(curr);
+	(*list)->prev = NULL;
 	insert_end_node(list, value, position);
+	*last = *list;
+	while ((*last)->next != NULL)
+		*last = (*last)->next;
+	free(aux);
 }
 
 void	reverse_rotate(t_node **list, t_node **last)
@@ -106,6 +111,7 @@ void	reverse_rotate(t_node **list, t_node **last)
 	int		value;
 	int		position;
 
+	aux = malloc(sizeof(t_node));
 	if (!aux || *list == NULL || *last == NULL || (*list)->next == NULL)
 		exit (0);
 	value = (*last)->x;
