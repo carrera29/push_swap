@@ -6,7 +6,7 @@
 /*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:21:32 by clcarre           #+#    #+#             */
-/*   Updated: 2022/09/05 16:17:02 by chloeplatt       ###   ########.fr       */
+/*   Updated: 2022/09/09 19:41:49 by chloeplatt       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,24 @@ void	simplify_num(int i, t_node **list)
 	}
 }
 
+int	num_max(t_node	**list)
+{
+	int		max;
+	t_node	*curr;
+	t_node	*aux;
+
+	curr = *list;
+	aux = curr->next;
+	while (aux != NULL)
+	{
+		if (aux->p > curr->p)
+			curr = aux;
+		else
+			aux = aux->next;
+	}
+	return (curr->p);
+}
+
 void	three_numbers(t_push p, t_node **list_a)
 {
 	t_node	*curr;
@@ -91,13 +109,13 @@ void	three_numbers(t_push p, t_node **list_a)
 		!((curr->p > curr->next->p) && (curr->p > curr->next->next->p) &&
 		(curr->next->p < curr->next->next->p))) || ((curr->p < curr->next->p) &&
 		(curr->p < curr->next->next->p) && (curr->next->p > curr->next->next->p)))
-			p.n = p.n + swap(list_a);
+			swap(list_a);
 	if ((curr->p > curr->next->p) && (curr->p > curr->next->next->p) &&
 		(curr->next->p < curr->next->next->p))
-			p.n = p.n + rotate(list_a);
+			rotate(list_a);
 	if ((curr->p < curr->next->p) && (curr->p > curr->next->next->p) &&
 		(curr->next->p > curr->next->next->p))
-			p.n = p.n + reverse_rotate(list_a);
+			reverse_rotate(list_a);
 }
 
 void	five_numbers(t_push p, t_node **list_a, t_node **list_b)
@@ -110,26 +128,68 @@ void	five_numbers(t_push p, t_node **list_a, t_node **list_b)
 	push(list_a, list_b);
 	three_numbers(p, list_a);
 	curr_b = *list_b;
-	curr_a = *list_a;
 	while (curr_b != NULL)
 	{
+		curr_a = *list_a;
+		curr_b = *list_b;
 		while (curr_a->p < curr_b->p)
 		{
-			printf("curr es %d, rotate\n", curr_a->x);
-			p.n = p.n + rotate(list_a);
+			printf("rotate\n");
+			rotate(list_a);
 			curr_a = *list_a;
 		}
 		printf("push %d\n", curr_b->x);
-		p.n = p.n + push(list_b, list_a);
-		curr_b = *list_b;
-		printf("curr b es %d\n", curr_b->x);
+		push(list_b, list_a);
+		printf("curr B es %d\n", curr_b->x);
 	}
+	push(list_b, list_a);
 	curr_a = *list_a;
 	while (curr_a->p != 0)
 	{
-		p.n = p.n + rotate(list_a);
+		rotate(list_a);
 		curr_a = *list_a;
 		printf("rotate y curr es %d\n", curr_a->x);
+	}
+}
+
+void	long_stack(t_push p, int n_max, t_node **list_a, t_node **list_b)
+{
+	t_node	*curr;
+	int		n_min;
+	int		n_midle;
+	int		n;
+
+	printf("El numero max es %d\n", n_max);
+	n_min = 0;
+	while (n_min < n_max)
+	{
+		n_midle = (n_max + n_min)/2;
+		printf("El numero min es %d\n", n_min);
+		printf("El numero intermedio es %d\n", n_midle);
+		n = n_max - n_midle;
+		while (n > 0)
+		{
+			curr = *list_a;
+			if (curr->p <= n_midle)
+			{
+				printf("pb %d\n", curr->p);
+				push(list_a, list_b);
+				n--;
+			}
+			else if (curr->next->p <= n_midle)
+			{
+				printf("sa\n");
+				swap(list_a);
+			}		
+			else
+			{
+				printf("ra\n");
+				rotate(list_a);
+				curr = *list_a;
+			}
+		}
+		printf("he salido\n");
+		n_min = n_midle;
 	}
 }
 
@@ -149,12 +209,19 @@ int	main(int argc, char	**argv)
 		insert_end_node(&list_a, ft_atoi(argv[p.i++]), 0);
 	if ((check_numbers(&list_a) == 0))
 		return (0);
-	simplify_num((p.i - 2), &list_a);
-	five_numbers(p, &list_a, &list_b);
+	simplify_num((p.i - 3), &list_a);
+	// five_numbers(p, &list_a, &list_b);
+	long_stack(p, (p.i - 2), &list_a, &list_b);
 	curr = list_a;
 	while (curr != NULL)
 	{
-		printf("A %d\n", curr->x);
+		printf("A %d\n", curr->p);
+		curr = curr->next;
+	}
+	curr = list_b;
+	while (curr != NULL)
+	{
+		printf("B %d\n", curr->p);
 		curr = curr->next;
 	}
 	free_node(&list_a);
