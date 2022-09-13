@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
+/*   By: clcarre <clcarrer@student.42madrid.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:30:41 by clcarre           #+#    #+#             */
-/*   Updated: 2022/09/05 14:56:43 by chloeplatt       ###   ########.fr       */
+/*   Updated: 2022/09/12 11:07:11 by clcarre          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct node
 typedef struct push_swap
 {
 	int	i;
+	int n_max;
 	int	n;
 }	t_push;
 
@@ -39,9 +40,9 @@ int		ft_atoi(const char *str);
 void	free_node(t_node **list);
 void	insert_end_node(t_node **list, int value, int position);
 void	insert_beginning_node(t_node **list, int value, int position);
-int		swap(t_node **list);
-int		rotate(t_node **list);
-int		reverse_rotate(t_node **list);
-int		push(t_node **pusher, t_node **to_list);
+void	swap(t_node **list, int i);
+void	rotate(t_node **list, t_node **last, int i);
+void	reverse_rotate(t_node **list, t_node **last, int i);
+void	push(t_node **pusher, t_node **to_list, int i);
 
 #endif

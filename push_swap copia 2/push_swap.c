@@ -6,7 +6,7 @@
 /*   By: clcarre <clcarrer@student.42madrid.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:21:32 by clcarre           #+#    #+#             */
-/*   Updated: 2022/09/12 17:46:27 by clcarre          ###   ########.fr       */
+/*   Updated: 2022/09/13 15:50:41 by clcarre          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,38 +110,37 @@ void	sort_stack_b(int n_max, t_node **list_a, t_node **list_b)
 {
 	t_node	*curr;
 	t_node	*last;
-	int		n_min;
 	int		n_mid;
-	int		n;
 	
-	n_min = 0;
 	last = *list_b;
 	while (last->next != NULL)
 		last = last->next;
 	curr = *list_b; 
-	printf("numero mayor es %d\n", n_max);
-	while (curr->next->next != NULL)
-	{
-		n_mid = (n_max + n_min)/2;
-		n = n_mid - n_min;
-		while (n != 0)
+	int i = 0;
+	while (n_max > 1)
+	{	
+		n_mid = (n_max / 2);
+		while (n_max > n_mid)
 		{
-			if ((curr->next->p > n_mid) && (curr->next->p > curr->p) && (curr->next->p > last->p))
-				swap(list_b, 1);
-			else if ((last->p > n_mid) && (last->p > curr->p) && (last->p > curr->next->p))
-				reverse_rotate(list_b, &last, 1);
-			else if (curr->p > n_mid)
+			if (curr->p == n_max)
 			{
 				push(list_b, list_a, 1);
-				n--;
+				n_max -= 1;
 			}
+			else if (curr->next->p == n_max)
+				swap(list_b, 1);
+			else if (last->p == n_max)
+				reverse_rotate(list_b, &last, 1);
 			else
 				rotate(list_b, &last, 1);
 			curr = *list_b;
 		}
-		n_min = n_mid;
+		i++;
 	}
-	three_numbers(list_b, &last, 1);
+	if (curr->next->p > curr->p)
+		swap(list_b, 1);
+	push(list_b, list_a, 1);
+	push(list_b, list_a, 1);
 }
 
 void	long_stack(int n_max, t_node **list_a, t_node **list_b, t_node **last)
@@ -153,10 +152,9 @@ void	long_stack(int n_max, t_node **list_a, t_node **list_b, t_node **last)
 	
 	n_min = 0;
 	curr = *list_a;
-	printf("numero mayor es %d\n", n_max);
 	while (curr->next->next->next != NULL)
 	{
-		n_mid = (n_max + n_min)/2;
+		n_mid = (n_max + n_min)/ 2;
 		n = n_mid - n_min;
 		while (n != 0)
 		{
@@ -208,15 +206,15 @@ int	main(int argc, char	**argv)
 	curr = list_a;
 	while (curr != NULL)
 	{
-		printf("A %d\n", curr->p);
+		printf("A %d\n", curr->x);
 		curr = curr->next;
 	}
-	curr = list_b;
-	while (curr != NULL)
-	{
-		printf("B %d\n", curr->p);
-		curr = curr->next;
-	}
+	// curr = list_b;
+	// while (curr != NULL)
+	// {
+	// 	printf("B %d\n", curr->x);
+	// 	curr = curr->next;
+	// }
 	free_node(&list_a);
 	free_node(&list_b);
 	return (0);
