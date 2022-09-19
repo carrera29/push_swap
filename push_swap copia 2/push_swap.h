@@ -29,8 +29,10 @@ typedef struct node
 typedef struct push_swap
 {
 	int	i;
-	int n_max;
 	int	n;
+	int	min;
+	int max;
+	int	mp;
 }	t_push;
 
 // write numbers

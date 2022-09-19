@@ -143,35 +143,38 @@ void	sort_stack_b(int n_max, t_node **list_a, t_node **list_b)
 	push(list_b, list_a, 1);
 }
 
-void	long_stack(int n_max, t_node **list_a, t_node **list_b, t_node **last)
+void	sort_stack_a(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
+{
+	if ((*list_a)->p < p->mp)
+	{
+		push(list_a, list_b, 0);
+		p->n--;
+	}
+	else if ((*list_a)->next->p < p->mp && (*list_a)->next->p < (*last)->p)
+		swap(list_a, 0);
+	else if ((*last)->p < p->mp)
+		reverse_rotate(list_a, last, 0);
+	else
+		rotate(list_a, last, 0);
+}
+
+void	long_stack(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
 {
 	t_node	*curr;
-	int		n_min;
-	int		n_mid;
-	int		n;
 	
-	n_min = 0;
+	p->min = 0;
+	p->max = p->i - 2;
 	curr = *list_a;
 	while (curr->next->next->next != NULL)
 	{
-		n_mid = (n_max + n_min)/ 2;
-		n = n_mid - n_min;
-		while (n != 0)
+		p->mp = (p->max + p->min)/ 2;
+		p->n = p->mp - p->min;
+		while (p->n != 0)
 		{
-			if (curr->p < n_mid)
-			{
-				push(list_a, list_b, 0);
-				n--;
-			}
-			else if ((curr->next->p < n_mid) && (curr->next->p < (*last)->p))
-				swap(list_a, 0);
-			else if ((*last)->p < n_mid)
-				reverse_rotate(list_a, last, 0);
-			else
-				rotate(list_a, last, 0);
+			sort_stack_a(p, list_a, list_b, last);
 			curr = *list_a;
 		}
-		n_min = n_mid;
+		p->min = p->mp;
 	}
 	three_numbers(list_a, last, 0);
 }
@@ -188,12 +191,12 @@ int	main(int argc, char	**argv)
 	list_b = NULL;
 	if (argc < 3)
 		return (0);
-	p.n_max = 1;
-	while (argv[p.n_max])
-		insert_end_node(&list_a, ft_atoi(argv[p.n_max++]), 0);
+	p.i = 1;
+	while (argv[p.i])
+		insert_end_node(&list_a, ft_atoi(argv[p.i++]), 0);
 	if ((check_numbers(&list_a) == 0))
 		return (0);
-	simplify_num((p.n_max - 2), &list_a);
+	simplify_num((p.i - 2), &list_a);
 	last = list_a;
 	while (last->next != NULL)
 		last = last->next;
@@ -201,20 +204,20 @@ int	main(int argc, char	**argv)
 	// 	three_numbers(&list_a, &last);
 	// else if (argc == 6)
 	// 	five_numbers(p, &list_a, &list_b, &last);
-	long_stack((p.i - 2), &list_a, &list_b, &last);
-	sort_stack_b((p.i - 5), &list_a, &list_b);
+	long_stack(&p, &list_a, &list_b, &last);
+	// sort_stack_b((p.i - 5), &list_a, &list_b);
 	curr = list_a;
 	while (curr != NULL)
 	{
 		printf("A %d\n", curr->x);
 		curr = curr->next;
 	}
-	// curr = list_b;
-	// while (curr != NULL)
-	// {
-	// 	printf("B %d\n", curr->x);
-	// 	curr = curr->next;
-	// }
+	curr = list_b;
+	while (curr != NULL)
+	{
+		printf("B %d\n", curr->x);
+		curr = curr->next;
+	}
 	free_node(&list_a);
 	free_node(&list_b);
 	return (0);
