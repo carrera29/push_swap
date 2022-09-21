@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: clcarre <clcarrer@student.42madrid.com>    +#+  +:+       +#+         #
+#    By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/13 13:09:12 by clcarre           #+#    #+#              #
-#    Updated: 2022/07/13 13:36:33 by clcarre          ###   ########.fr        #
+#    Updated: 2022/09/05 11:08:14 by chloeplatt       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,14 +21,13 @@ CFLAGS 	= -Wall -Wextra -Werror
 
 $(NAME) : $(OBJS)
 	$(LIB) $(NAME) $(OBJS)
-
-.c.o :
-	gcc $(CFLAGS) -c $< -o $(<:.c=.o)
-
+	
 all : $(NAME)
 
+gcc $(CFLAGS) -c $< -o $(<:.c=.o)
+
 clean : 
-	rm -f $(OBJS) $(OBJS_B)
+	rm -f $(OBJS)
 
 fclean : clean
 	rm -f $(NAME)

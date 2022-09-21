@@ -3,35 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
+/*   By: clcarre <clcarrer@student.42madrid.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:21:32 by clcarre           #+#    #+#             */
-/*   Updated: 2022/09/01 12:23:55 by chloeplatt       ###   ########.fr       */
+/*   Updated: 2022/09/13 15:50:41 by clcarre          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-/*
-sa : swap a / sb : swap b / ss : swap a & swap b
-	1	->	3
-	3	->	1
-	2		2
-    
-pa : push a to b / pb : push b to a
-	1	->				
-	3				2	<-	2
-	2		1		1		3
-
-ra : rotate a /  rb : rotate b / rr : rotate a y rotate b al mismo tiempo
-	1	->	3
-	3	->	2
-	2		1
-
-rra : reverse rotate a / rrb : reverse rotate b / rrr : a y b al mismo tiempo
-	1	->	2
-	3	->	1
-	2		3
-*/
 
 int	check_numbers(t_node **list)
 {
@@ -76,120 +55,177 @@ void	simplify_num(int i, t_node **list)
 		{
 			if (aux->x > curr->x && aux->p == 0)
 				curr = aux;
-			curr->p = i;
-			i--;
+			curr->p = i--;
 			curr = *list;
 		}
 	}
 }
 
-void	sort_bits(int i, t_node **list_a, t_node **list_b, t_node **last)
+void	three_numbers(t_node **list, t_node **last, int i)
 {
-	t_node	*curr;
-
-	curr = *list_a;
-	printf("curr es %d\n", curr->p);
-	printf("last es %d\n", (*last)->p);
-	while (((curr->p >> i) & 1) == 1)
-	{
-		if (((((curr->next->p >> i) & 1) == 0) && ((((*last)->p >> i) & 1) == 0) &&
-			(curr->next->p < (*last)->p)) ||
-				((((curr->next->p >> i) & 1) == 0) && ((((*last)->p >> i) & 1) == 1)))
-		{
-			printf("swap %d\n", curr->next->p);
-			swap(list_a);
-		}
-		else if (((((curr->next->p >> i) & 1) == 0) && ((((*last)->p >> i) & 1) == 0) &&
-			(curr->next->p > (*last)->p)) ||
-				((((curr->next->p >> i) & 1) == 1) && ((((*last)->p >> i) & 1) == 0)))
-		{
-			printf("reverse rotate %d\n", (*last)->p);
-			reverse_rotate(list_a, last);
-		}
-		else
-		{
-			rotate(list_a, last);
-			curr = *list_a;
-			printf("rotate -> ahora curr es %d\n", curr->p);
-		}
-		curr = *list_a;
-	}
-	printf("push %d to B\n", curr->p);
-	push(list_a, list_b);
+	if ((((*list)->p > (*list)->next->p) &&
+		!(((*list)->p > (*list)->next->p) && ((*list)->p > (*last)->p) &&
+		((*list)->next->p < (*last)->p))) || (((*list)->p < (*list)->next->p) &&
+		((*list)->p < (*last)->p) && ((*list)->next->p > (*last)->p)))
+			swap(list, i);
+	if (((*list)->p > (*list)->next->p) && ((*list)->p > (*last)->p) &&
+		((*list)->next->p < (*last)->p))
+			rotate(list, last, i);
+	if (((*list)->p < (*list)->next->p) && ((*list)->p > (*last)->p) &&
+		((*list)->next->p > (*last)->p))
+			reverse_rotate(list, last, i);
 }
 
-void	push_swap(t_node **list_a, t_node **list_b, t_node **last)
+void	five_numbers(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
 {
-	t_node	*curr;
-	int		i;
-	int		n_zeros;
+	t_node	*curr_a;
+	t_node	*last_a;
 
-	i = 0;
-	while (i < 32)
+	p.i = 0;
+	curr_a = *list_a;
+	last_a = *last;
+	while (p.i < 2)
 	{
-		curr = *list_a;
-		n_zeros = 0;
-		while (curr != NULL)
+		while (curr_a->p != p.i)
 		{
-			if (((curr->p >> i) & 1) == 0)
-				n_zeros++;
-			curr = curr->next;
+			if (last_a->p == p.i || last_a->prev->p == p.i)
+				reverse_rotate(list_a, last, 0);
+			else
+				rotate(list_a, last, 0);
+			curr_a = *list_a;
+			last_a = *last;
 		}
-		while (n_zeros != 0)
-		{
-			printf("\nPASO %d\n", n_zeros);
-			sort_bits(i, list_a, list_b, last);
-			n_zeros--;
-		}
-		curr = *list_b;
-		printf("\n");
-		while (curr != NULL)
-		{
-			push(list_b, list_a);
-			printf("%d a A\n", curr->p);
-			curr = curr->next;
-		}
-		printf("\n");
-		i++;
+		push(list_a, list_b, 0);
+		p.i++;
 	}
+	three_numbers(list_a, last, 0);
+	push(list_b, list_a, 1);
+	push(list_b, list_a, 1);
 }
 
-int	main(int argc, char	**argv, char **envp)
+void	sort_stack_b(int n_max, t_node **list_a, t_node **list_b)
 {
-	t_node	*list_a;
-	t_node	*list_b;
 	t_node	*curr;
 	t_node	*last;
-	int		i;
-
-	list_a = NULL;
-	list_b = NULL;
-	if (argc < 3)
-		return (0);
-	i = 1;
-	while (argv[i])
-		insert_end_node(&list_a, ft_atoi(argv[i++]), 0);
-	if ((check_numbers(&list_a) == 0))
-		return (0);
-	simplify_num((i - 2), &list_a);
-	last = list_a;
+	int		n_mid;
+	
+	last = *list_b;
 	while (last->next != NULL)
 		last = last->next;
-	push_swap(&list_a, &list_b, &last);
-	curr = list_a;
-	while (curr != NULL)
-	{
-		printf("A %d\n", curr->x);
-		curr = curr->next;
+	curr = *list_b; 
+	int i = 0;
+	while (n_max > 1)
+	{	
+		n_mid = (n_max / 2);
+		while (n_max > n_mid)
+		{
+			if (curr->p == n_max)
+			{
+				push(list_b, list_a, 1);
+				n_max -= 1;
+			}
+			else if (curr->next->p == n_max)
+				swap(list_b, 1);
+			else if (last->p == n_max)
+				reverse_rotate(list_b, &last, 1);
+			else
+				rotate(list_b, &last, 1);
+			curr = *list_b;
+		}
+		i++;
 	}
-	printf("\n");
-	curr = list_b;
-	while (curr != NULL)
+	if (curr->next->p > curr->p)
+		swap(list_b, 1);
+	push(list_b, list_a, 1);
+	push(list_b, list_a, 1);
+}
+
+void	sort_stack_a(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
+{
+	if ((*list_a)->p < p->mp)
 	{
-		printf("B %d\n", curr->x);
-		curr = curr->next;
+		push(list_a, list_b, 0);
+		p->n--;
 	}
-	free_node(&list_a);
-	free_node(&list_b);
+	else if ((*list_a)->next->p < p->mp && (*list_a)->next->p < (*last)->p)
+		swap(list_a, 0);
+	else if ((*last)->p < p->mp)
+		reverse_rotate(list_a, last, 0);
+	else
+		rotate(list_a, last, 0);
+}
+
+void	long_stack(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
+{
+	t_node	*curr;
+	
+	p->min = 0;
+	p->max = p->i - 1;
+	curr = *list_a;
+	while (curr->next->next->next->next->next != NULL)
+	{
+		p->mp = (p->max + p->min)/ 2;
+		p->n = p->mp - p->min;
+		while (p->n != 0)
+		{
+			sort_stack_a(p, list_a, list_b, last);
+			curr = *list_a;
+		}
+		p->min = p->mp;
+	}
+	five_numbers(p, list_a, list_b, last);
+}
+
+int	main(int argc, char	**argv)
+{
+	t_push	p;
+
+	p.list_a = NULL;
+	p.list_b = NULL;
+	if (argc < 2)
+		return (0);
+	else if (argc == 2)
+	{
+		p.numbers = ft_split(argv[1], ' ');
+		p.i = 0;
+		while (p.numbers[p.i])
+			insert_end_node(&p.list_a, ft_atoi(p.numbers[p.i++]), 0);
+	}
+	else
+	{
+		p.i = 1;
+		while (argv[p.i])
+			insert_end_node(&p.list_a, ft_atoi(argv[p.i++]), 0);
+		p.i--;
+	}
+	if ((check_numbers(&p.list_a) == 0))
+		return (0);
+	simplify_num((p.i - 1), &p.list_a);
+	p.last = p.list_a;
+	while (p.last->next != NULL)
+		p.last = p.last->next;
+	if (p.i == 2)
+		three_numbers(&p.list_a, &p.last, 0);
+	else if (p.i == 4)
+		five_numbers(p, &p.list_a, &p.list_b, &p.last);
+	else
+	{
+		long_stack(&p, &p.list_a, &p.list_b, &p.last);
+		sort_stack_b((p.i - 6), &p.list_a, &p.list_b);
+	}
+	// p.curr = p.list_a;
+	// while (p.curr != NULL)
+	// {
+	// 	printf("A %d\n", p.curr->p);
+	// 	p.curr = p.curr->next;
+	// }
+	// p.curr = p.list_b;
+	// while (p.curr != NULL)
+	// {
+	// 	printf("B %d\n", p.curr->p);
+	// 	p.curr = p.curr->next;
+	// }
+	free_node(&p.list_a);
+	free_node(&p.list_b);
 	return (0);
 }
