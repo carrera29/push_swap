@@ -28,15 +28,21 @@ typedef struct node
 
 typedef struct push_swap
 {
-	int	i;
-	int	n;
-	int	min;
-	int max;
-	int	mp;
-}	t_push;
+	t_node	*list_a;
+	t_node	*list_b;
+	t_node	*curr;
+	t_node	*last;
+	char	**numbers;
+	int		i;
+	int		n;
+	int		min;
+	int 	max;
+	int		mp;
+}			t_push;
 
 // write numbers
 int		ft_atoi(const char *str);
+char	**ft_split(char const *s, char c);
 
 // move_numbers
 void	free_node(t_node **list);

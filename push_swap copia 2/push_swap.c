@@ -63,23 +63,20 @@ void	simplify_num(int i, t_node **list)
 
 void	three_numbers(t_node **list, t_node **last, int i)
 {
-	t_node	*curr;
-
-	curr = *list;
-	if (((curr->p > curr->next->p) &&
-		!((curr->p > curr->next->p) && (curr->p > curr->next->next->p) &&
-		(curr->next->p < curr->next->next->p))) || ((curr->p < curr->next->p) &&
-		(curr->p < curr->next->next->p) && (curr->next->p > curr->next->next->p)))
+	if ((((*list)->p > (*list)->next->p) &&
+		!(((*list)->p > (*list)->next->p) && ((*list)->p > (*last)->p) &&
+		((*list)->next->p < (*last)->p))) || (((*list)->p < (*list)->next->p) &&
+		((*list)->p < (*last)->p) && ((*list)->next->p > (*last)->p)))
 			swap(list, i);
-	if ((curr->p > curr->next->p) && (curr->p > curr->next->next->p) &&
-		(curr->next->p < curr->next->next->p))
+	if (((*list)->p > (*list)->next->p) && ((*list)->p > (*last)->p) &&
+		((*list)->next->p < (*last)->p))
 			rotate(list, last, i);
-	if ((curr->p < curr->next->p) && (curr->p > curr->next->next->p) &&
-		(curr->next->p > curr->next->next->p))
+	if (((*list)->p < (*list)->next->p) && ((*list)->p > (*last)->p) &&
+		((*list)->next->p > (*last)->p))
 			reverse_rotate(list, last, i);
 }
 
-void	five_numbers(t_push p, t_node **list_a, t_node **list_b, t_node **last)
+void	five_numbers(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
 {
 	t_node	*curr_a;
 	t_node	*last_a;
@@ -163,9 +160,9 @@ void	long_stack(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
 	t_node	*curr;
 	
 	p->min = 0;
-	p->max = p->i - 2;
+	p->max = p->i - 1;
 	curr = *list_a;
-	while (curr->next->next->next != NULL)
+	while (curr->next->next->next->next->next != NULL)
 	{
 		p->mp = (p->max + p->min)/ 2;
 		p->n = p->mp - p->min;
@@ -176,49 +173,59 @@ void	long_stack(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
 		}
 		p->min = p->mp;
 	}
-	three_numbers(list_a, last, 0);
+	five_numbers(p, list_a, list_b, last);
 }
 
 int	main(int argc, char	**argv)
 {
-	t_node	*list_a;
-	t_node	*list_b;
-	t_node	*curr;
-	t_node	*last;
 	t_push	p;
 
-	list_a = NULL;
-	list_b = NULL;
-	if (argc < 3)
+	p.list_a = NULL;
+	p.list_b = NULL;
+	if (argc < 2)
 		return (0);
-	p.i = 1;
-	while (argv[p.i])
-		insert_end_node(&list_a, ft_atoi(argv[p.i++]), 0);
-	if ((check_numbers(&list_a) == 0))
+	else if (argc == 2)
+	{
+		p.numbers = ft_split(argv[1], ' ');
+		p.i = 0;
+		while (p.numbers[p.i])
+			insert_end_node(&p.list_a, ft_atoi(p.numbers[p.i++]), 0);
+	}
+	else
+	{
+		p.i = 1;
+		while (argv[p.i])
+			insert_end_node(&p.list_a, ft_atoi(argv[p.i++]), 0);
+		p.i--;
+	}
+	if ((check_numbers(&p.list_a) == 0))
 		return (0);
-	simplify_num((p.i - 2), &list_a);
-	last = list_a;
-	while (last->next != NULL)
-		last = last->next;
-	// if (argc == 4)
-	// 	three_numbers(&list_a, &last);
-	// else if (argc == 6)
-	// 	five_numbers(p, &list_a, &list_b, &last);
-	long_stack(&p, &list_a, &list_b, &last);
-	// sort_stack_b((p.i - 5), &list_a, &list_b);
-	curr = list_a;
-	while (curr != NULL)
+	simplify_num((p.i - 1), &p.list_a);
+	p.last = p.list_a;
+	while (p.last->next != NULL)
+		p.last = p.last->next;
+	if (p.i == 2)
+		three_numbers(&p.list_a, &p.last, 0);
+	else if (p.i == 4)
+		five_numbers(p, &p.list_a, &p.list_b, &p.last);
+	else
 	{
-		printf("A %d\n", curr->x);
-		curr = curr->next;
+		long_stack(&p, &p.list_a, &p.list_b, &p.last);
+		sort_stack_b((p.i - 6), &p.list_a, &p.list_b);
 	}
-	curr = list_b;
-	while (curr != NULL)
-	{
-		printf("B %d\n", curr->x);
-		curr = curr->next;
-	}
-	free_node(&list_a);
-	free_node(&list_b);
+	// p.curr = p.list_a;
+	// while (p.curr != NULL)
+	// {
+	// 	printf("A %d\n", p.curr->p);
+	// 	p.curr = p.curr->next;
+	// }
+	// p.curr = p.list_b;
+	// while (p.curr != NULL)
+	// {
+	// 	printf("B %d\n", p.curr->p);
+	// 	p.curr = p.curr->next;
+	// }
+	free_node(&p.list_a);
+	free_node(&p.list_b);
 	return (0);
 }
