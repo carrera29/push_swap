@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   move_numbers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clcarre <clcarrer@student.42madrid.com>    +#+  +:+       +#+        */
+/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 16:31:48 by clcarre           #+#    #+#             */
-/*   Updated: 2022/09/13 10:43:52 by clcarre          ###   ########.fr       */
+/*   Updated: 2022/10/07 18:41:28 by chloeplatt       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
