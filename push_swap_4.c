@@ -100,18 +100,47 @@ void	five_numbers(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
 	push(list_b, list_a, 1);
 }
 
-int	is_shortest(t_push *p, t_node **list, t_node **last)
+int	is_shortest_b(t_push *p, t_node **list, t_node **last)
 {
 	p->rot = 0;
 	p->rev = 0;
 	p->curr = *list;
-	while ((p->curr->p < p->min || (*list)->p > p->mp) && (p->curr->next != NULL))
+	while (p->curr->next != NULL)
+	{
+		if (p->curr->p == p->min || p->curr->p == p->max)
+			break;
+		p->curr = p->curr->next;
+		p->rot++;
+	}
+	p->curr = *last;
+	while (p->curr->prev != NULL)
+	{
+		if (p->curr->p == p->min || p->curr->p == p->max)
+			break;
+		p->curr = p->curr->prev;
+		p->rev++;
+	}
+	if (p->rot <= p->rev)
+	{	
+		p->rev = -1;
+		return (p->rot);
+	}
+	p->rot = -1;
+	return (p->rev += 1);
+}
+
+int	is_shortest_a(t_push *p, int max, t_node **list, t_node **last)
+{
+	p->rot = 0;
+	p->rev = 0;
+	p->curr = *list;
+	while ((p->curr->p < p->min || p->curr->p > max) && (p->curr->next != NULL))
 	{
 		p->curr = p->curr->next;
 		p->rot++;
 	}
 	p->curr = *last;
-	while ((p->curr->p < p->min || (*list)->p > p->mp) && (p->curr->next != NULL))
+	while ((p->curr->p < p->min || p->curr->p > max) && (p->curr->prev != NULL))
 	{
 		p->curr = p->curr->prev;
 		p->rev++;
@@ -125,68 +154,63 @@ int	is_shortest(t_push *p, t_node **list, t_node **last)
 	return (p->rev += 1);
 }
 
-void	push_stack_b(t_push *p, int n_num, t_node **list_a, t_node **list_b)
+void	push_stack_b(t_push *p, int n_num, t_node **list_a, t_node **list_b, t_node **last_b)
 {
-	p->last_b = *list_b;
-	while (p->last_b->next != NULL)
-		p->last_b = p->last_b->next;
 	p->min = (p->i / 2) - 1;
 	p->max = (p->i / 2) + 1;
-	p->steps = is_shortest(p, list_a, last);
 	while (n_num > 1)
 	{
-		if ((*list_b)->next->p == p->min || (*list_b)->next->p == p->max)
-			swap(list_b, 1);
-		else if (p->last_b->p == p->min || p->last_b->p == p->max)
-			reverse_rotate(list_b, &p->last_b, 1);
-		if ((*list_b)->p == p->min || (*list_b)->p == p->max)
+		p->steps = is_shortest_b(p, list_b, last_b);
+		while (p->steps--)
 		{
-			push(list_b, list_a, 1);
-			if ((*list_a)->p == p->max)
-			{
-				rotate(list_a, &p->last, 0);
-				p->max++;
-			}
+			if (p->rot != -1)
+				rotate(list_b, last_b, 1);
 			else
-				p->min--;
-			n_num--;
+				reverse_rotate(list_b, last_b, 1);
+		}
+		push(list_b, list_a, 1);
+		if ((*list_a)->p == p->max)
+		{
+			rotate(list_a, &p->last, 0);
+			p->max++;
 		}
 		else
-			rotate(list_b, &p->last_b, 1);
+			p->min--;
+		n_num--;
 	}
 	push(list_b, list_a, 1);
 	if ((*list_a)->p > (*list_a)->next->p)
 		rotate(list_a, &p->last, 0);
 }
 
-void	sort_stack_b(t_push *p, t_node **list_b)
-{
-	p->last_b = *list_b;
-	while (p->last_b->next != NULL)
-		p->last_b = p->last_b->next;
-	if (p->stop == 1)
-	{
-		while ((*list_b)->p < (*list_b)->next->p && (*list_b)->p < p->last_b->p &&
-			(*list_b)->p < p->last_b->prev->p)
-		{
-			if ((*list_b)->next->p > (*list_b)->p)
-				swap(list_b, 1);
-			else if ((p->last_b->p > (*list_b)->p) || (p->last_b->p > (*list_b)->next->p)
-				|| (p->last_b->p > (*list_b)->next->p) || (p->last_b->prev->p > (*list_b)->next->p))
-				reverse_rotate(list_b, &p->last_b, 1);
-		}
-	}
-	else
-	{
-		if (((*list_b)->next->p > (*list_b)->p) && (p->stop == 3))
-			swap(list_b, 1);
-		p->stop++;
-	}
-}
+// void	sort_stack_b(t_push *p, t_node **list_b)
+// {
+// 	p->last_b = *list_b;
+// 	while (p->last_b->next != NULL)
+// 		p->last_b = p->last_b->next;
+// 	if (p->stop == 1)
+// 	{
+// 		while ((*list_b)->p < (*list_b)->next->p && (*list_b)->p < p->last_b->p &&
+// 			(*list_b)->p < p->last_b->prev->p)
+// 		{
+// 			if ((*list_b)->next->p > (*list_b)->p)
+// 				swap(list_b, 1);
+// 			else if ((p->last_b->p > (*list_b)->p) || (p->last_b->p > (*list_b)->next->p)
+// 				|| (p->last_b->p > (*list_b)->next->p) || (p->last_b->prev->p > (*list_b)->next->p))
+// 				reverse_rotate(list_b, &p->last_b, 1);
+// 		}
+// 	}
+// 	else
+// 	{
+// 		if (((*list_b)->next->p > (*list_b)->p) && (p->stop == 3))
+// 			swap(list_b, 1);
+// 		p->stop++;
+// 	}
+// }
 
 void	sort_stack_a(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
 {
-	p->steps = is_shortest(p, list_a, last);
+	p->steps = is_shortest_a(p, p->mp, list_a, last);
 	while (p->steps--)
 	{
 		if (p->rot != -1)
@@ -194,13 +218,8 @@ void	sort_stack_a(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
 		else
 			reverse_rotate(list_a, last, 0);
 	}
-	if ((*list_a)->p >= p->min && (*list_a)->p <= p->mp)
-	{
-		push(list_a, list_b, 0);
-		p->n--;
-		// if ((*list_b) != NULL && (*list_b)->next != NULL)
-		// 	sort_stack_b(p, list_b);
-	}
+	push(list_a, list_b, 0);
+	p->n--;
 }
 
 void	long_stack(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
@@ -222,7 +241,10 @@ void	long_stack(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
 			p->stop = 2;
 		}
 	}
-	push_stack_b(p, (p->i - 1), list_a, list_b);
+	p->last_b = *list_b;
+	while (p->last_b->next != NULL)
+		p->last_b = p->last_b->next;
+	push_stack_b(p, (p->i - 1), list_a, list_b, &p->last_b);
 }
 
 int	main(int argc, char	**argv)
@@ -262,7 +284,7 @@ int	main(int argc, char	**argv)
 	// p.curr = p.list_a;
 	// while (p.curr != NULL)
 	// {
-	// 	printf("A %d\n", p.curr->p);
+	// 	printf("A %d\n", p.curr->x);
 	// 	p.curr = p.curr->next;
 	// }
 	// printf("\n");
