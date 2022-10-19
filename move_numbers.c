@@ -3,71 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   move_numbers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
+/*   By: clcarrer <clcarrer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 16:31:48 by clcarre           #+#    #+#             */
-/*   Updated: 2022/10/07 18:41:28 by chloeplatt       ###   ########.fr       */
+/*   Updated: 2022/10/19 15:31:05 by clcarrer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-
-void	free_node(t_node **list)
-{
-	t_node	*aux;
-	t_node	*curr;
-
-	curr = *list;
-	while (curr != NULL)
-	{
-		aux = curr;
-		curr = curr->next;
-		free(aux);
-	}
-	*list = NULL;
-}
-
-void	insert_end_node(t_node **list, int value, int position)
-{
-	t_node	*new_node;
-	t_node	*curr;
-
-	new_node = malloc(sizeof(t_node));
-	if (!new_node)
-		perror("malloc error");
-	new_node->x = value;
-	new_node->p = position;
-	new_node->next = NULL;
-	if (*list == NULL)
-	{
-		new_node->prev = NULL;
-		*list = new_node;
-	}
-	else
-	{
-		curr = *list;
-		while (curr->next != NULL)
-			curr = curr->next;
-		new_node->prev = curr;
-		curr->next = new_node;
-	}
-}
-
-void	insert_beginning_node(t_node **list, int value, int position)
-{
-	t_node	*new_node;
-
-	new_node = malloc(sizeof(t_node));
-	if (!new_node)
-		exit (0);
-	new_node->x = value;
-	new_node->p = position;
-	new_node->prev = NULL;
-	new_node->next = *list;
-	if ((*list) != NULL)
-		(*list)->prev = new_node;
-	*list = new_node;
-}
 
 void	swap(t_node **list, int i)
 {
@@ -155,39 +98,3 @@ void	push(t_node **pusher, t_node **to_list, int i)
 		write(1, "pa\n", 3);
 	free(aux);
 }
-
-// int	main(int argc, char **argv)
-// {
-// 	t_node	*list_a;
-// 	t_node	*list_b;
-// 	t_node	*curr;
-// 	t_node	*last;
-// 	t_push	p;
-
-// 	list_a = NULL;
-// 	list_b = NULL;
-// 	if (argc < 3)
-// 		return (0);
-// 	p.n_max = 1;
-// 	while (argv[p.n_max])
-// 		insert_end_node(&list_a, ft_atoi(argv[p.n_max++]), 0);
-// 	push(&list_a, &list_b, 0);
-// 	push(&list_a, &list_b, 0);
-// 	push(&list_a, &list_b, 0);
-// 	push(&list_a, &list_b, 0);
-// 	push(&list_b, &list_a, 1);
-// 	push(&list_b, &list_a, 1);
-// 	curr = list_a;
-// 	while (curr != NULL)
-// 	{
-// 		printf("A %d\n", curr->x);
-// 		curr = curr->next;
-// 	}
-// 	printf("\n");
-// 	curr = list_b;
-// 	while (curr != NULL)
-// 	{
-// 		printf("B %d\n", curr->x);
-// 		curr = curr->next;
-// 	}
-// }
