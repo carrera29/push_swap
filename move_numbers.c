@@ -6,11 +6,29 @@
 /*   By: clcarrer <clcarrer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 16:31:48 by clcarre           #+#    #+#             */
-/*   Updated: 2022/10/19 15:31:05 by clcarrer         ###   ########.fr       */
+/*   Updated: 2022/10/20 17:53:25 by clcarrer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
+
+void	free_node(t_push *p, t_node **list_a, t_node **list_b)
+{
+	p->curr = *list_a;
+	p->i = 2;
+	while (p->i--)
+	{
+		while (p->curr != NULL)
+		{
+			p->aux = p->curr;
+			p->curr = p->curr->next;
+			free(p->aux);
+		}
+		p->curr = *list_b;
+	}
+	*list_a = NULL;
+	*list_b = NULL;
+}
 
 void	swap(t_node **list, int i)
 {

@@ -6,11 +6,22 @@
 /*   By: clcarrer <clcarrer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 12:12:53 by clcarrer          #+#    #+#             */
-/*   Updated: 2022/10/19 16:51:12 by clcarrer         ###   ########.fr       */
+/*   Updated: 2022/10/20 17:53:15 by clcarrer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
+
+int	ft_is_integer(t_push *p, int c)
+{
+	if (c > 2147483647 || c < -2147483648)
+	{
+		write(1, "Error\n", 6);
+		free_node(p, &p->list_a, &p->list_b);
+		exit (1);
+	}
+	return (0);
+}
 
 int	check_numbers(t_push *p, t_node **list)
 {
@@ -100,25 +111,4 @@ void	insert_beginning_node(t_node **list, int value, int position)
 	if ((*list) != NULL)
 		(*list)->prev = new_node;
 	*list = new_node;
-}
-
-void	free_node(t_push p, t_node **list_a, t_node **list_b)
-{
-	t_node	*aux;
-	t_node	*curr;
-
-	curr = *list_a;
-	p.i = 2;
-	while (p.i--)
-	{
-		while (curr != NULL)
-		{
-			aux = curr;
-			curr = curr->next;
-			free(aux);
-		}
-		curr = *list_b;
-	}
-	*list_a = NULL;
-	*list_b = NULL;
 }

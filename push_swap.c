@@ -6,7 +6,7 @@
 /*   By: clcarrer <clcarrer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:21:32 by clcarre           #+#    #+#             */
-/*   Updated: 2022/10/19 17:02:54 by clcarrer         ###   ########.fr       */
+/*   Updated: 2022/10/20 18:15:56 by clcarrer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,20 +31,20 @@ void	three_numbers(t_node **list, t_node **last, int i)
 
 void	five_numbers(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
 {
-	p->n = p->i - 5;
-	while (p->n < (p->i - 3))
+	p->min = 0;
+	p->max = -1;
+	while (p->min != p->i - 3)
 	{
-		while ((*list_a)->p != p->n)
+		p->steps = is_shortest_b(p, list_a, last);
+		while (p->steps--)
 		{
-			if ((*list_a)->next->p == p->n)
-				swap(list_a, 0);
-			else if ((*last)->p == p->n || (*last)->prev->p == p->n)
-				reverse_rotate(list_a, last, 0);
-			else
+			if (p->rot != -1)
 				rotate(list_a, last, 0);
+			else
+				reverse_rotate(list_a, last, 0);
 		}
 		push(list_a, list_b, 0);
-		p->n++;
+		p->min++;
 	}
 	three_numbers(list_a, last, 0);
 	push(list_b, list_a, 1);
@@ -70,31 +70,41 @@ void	push_swap(t_push *p, t_node **list_a, t_node **list_b)
 	}
 }
 
+void	check_in(t_push *p, int argc, char **argv)
+{
+	if (argc == 2)
+	{
+		p->numbers = ft_split(argv[1], ' ');
+		p->i = 0;
+		while (p->numbers[p->i])
+			insert_end_node(&p->list_a, ft_atoi(p->numbers[p->i++]), 0);
+	}
+	else
+	{
+		p->i = 1;
+		while (argv[p->i])
+			insert_end_node(&p->list_a, ft_atoi(argv[p->i++]), 0);
+		p->i--;
+	}
+	p->curr = p->list_a;
+	while (p->curr->next != NULL)
+	{
+		ft_is_integer(p, p->curr->p);
+		p->curr = p->curr->next;
+	}
+}
+
 int	main(int argc, char	**argv)
 {
 	t_push	p;
 
 	p.list_a = NULL;
 	p.list_b = NULL;
-	if (argc < 2)
-		return (0);
-	else if (argc == 2)
-	{
-		p.numbers = ft_split(argv[1], ' ');
-		p.i = 0;
-		while (p.numbers[p.i])
-			insert_end_node(&p.list_a, ft_atoi(p.numbers[p.i++]), 0);
-	}
-	else
-	{
-		p.i = 1;
-		while (argv[p.i])
-			insert_end_node(&p.list_a, ft_atoi(argv[p.i++]), 0);
-		p.i--;
-	}
-	if ((check_numbers(&p, &p.list_a) == 0))
+	if (argc > 1)
+		check_in(&p, argc, argv);
+	if (check_numbers(&p, &p.list_a) == 0)
 		push_swap(&p, &p.list_a, &p.list_b);
-	free_node(p, &p.list_a, &p.list_b);
+	free_node(&p, &p.list_a, &p.list_b);
 	return (0);
 }
 
@@ -102,12 +112,5 @@ int	main(int argc, char	**argv)
 // while (p.curr != NULL)
 // {
 // 	printf("A %d\n", p.curr->x);
-// 	p.curr = p.curr->next;
-// }
-// printf("\n");
-// p.curr = p.list_b;
-// while (p.curr != NULL)
-// {
-// 	printf("B %d\n", p.curr->p);
 // 	p.curr = p.curr->next;
 // }

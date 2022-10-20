@@ -6,7 +6,7 @@
 /*   By: clcarrer <clcarrer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:30:41 by clcarre           #+#    #+#             */
-/*   Updated: 2022/10/19 16:01:11 by clcarrer         ###   ########.fr       */
+/*   Updated: 2022/10/20 17:54:55 by clcarrer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,14 @@ int		ft_atoi(const char *str);
 char	**ft_split(char const *s, char c);
 
 //		check_in
+int		ft_is_integer(t_push *p, int c);
 int		check_numbers(t_push *p, t_node **list);
 void	simplify_num(int i, t_node **list);
 void	insert_end_node(t_node **list, int value, int position);
 void	insert_beginning_node(t_node **list, int value, int position);
-void	free_node(t_push p, t_node **list_a, t_node **list_b);
 
 //		move_numbers
+void	free_node(t_push *p, t_node **list_a, t_node **list_b);
 void	swap(t_node **list, int i);
 void	rotate(t_node **list, t_node **last, int i);
 void	reverse_rotate(t_node **list, t_node **last, int i);
