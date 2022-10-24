@@ -6,26 +6,31 @@
 #    By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/13 13:09:12 by clcarre           #+#    #+#              #
-#    Updated: 2022/09/05 11:08:14 by chloeplatt       ###   ########.fr        #
+#    Updated: 2022/10/24 15:20:47 by chloeplatt       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME  	= push_swap.a 
-LIB 	= ar -rcs
+NAME  	= 	push_swap.a
+CFLAGS 	= 	-Wall -Wextra -Werror
 
-SRC		= push_swap.c
+OBJ_PAT =	./obj/
+SRC		= 	./src/push_swap.c \
+			./src/check_in.c \
+			./src/ft_split.c \
+			./src/long_stack.c \
+			./src/move_numbers.c \
+			./src/utils.c
 
-OBJS 	= $(SRC:.c=.o)
+OBJS 	= 	$(SRC:.c=.o)
 
-CFLAGS 	= -Wall -Wextra -Werror
-
-$(NAME) : $(OBJS)
-	$(LIB) $(NAME) $(OBJS)
-	
 all : $(NAME)
 
-gcc $(CFLAGS) -c $< -o $(<:.c=.o)
+$(NAME) : $(OBJS)
+	ar -rcs $(NAME) $(OBJS)
 
+.c.o :
+	gcc $(CFLAGS) -c $< -o $(<:.c=.o)
+	
 clean : 
 	rm -f $(OBJS)
 
