@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
+/*   By: clcarrer <clcarrer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:21:32 by clcarre           #+#    #+#             */
-/*   Updated: 2022/10/24 12:55:50 by chloeplatt       ###   ########.fr       */
+/*   Updated: 2022/10/26 12:13:46 by clcarrer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,12 +80,6 @@ int	main(int argc, char	**argv)
 		check_in(&p, argv);
 	if (check_numbers(&p, &p.list_a) == 0)
 		push_swap(&p, &p.list_a, &p.list_b);
-	// p.curr = p.list_a;
-	// while (p.curr != NULL)
-	// {
-	// 	printf("A %d\n", p.curr->x);
-	// 	p.curr = p.curr->next;
-	// }
 	free_node(&p, &p.list_a, &p.list_b);
 	return (0);
 }

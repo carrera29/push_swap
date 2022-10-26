@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   long_stack.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
+/*   By: clcarrer <clcarrer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:46:54 by clcarrer          #+#    #+#             */
-/*   Updated: 2022/10/24 12:57:30 by chloeplatt       ###   ########.fr       */
+/*   Updated: 2022/10/26 12:30:17 by clcarrer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ void	long_stack(t_push *p, t_node **list_a, t_node **list_b)
 {
 	p->min = (p->i / 2) + 1;
 	p->max = p->i - 1;
+	p->x = 1;
 	while (p->min <= p->max)
 	{
 		p->mp = ((p->max - p->min) / p->d) + p->min;
@@ -116,6 +117,7 @@ void	long_stack(t_push *p, t_node **list_a, t_node **list_b)
 		p->min = p->mp + 1;
 		if (p->min == p->i)
 		{
+			p->x++;
 			p->max = (p->i / 2) - 1;
 			p->min = 0;
 		}

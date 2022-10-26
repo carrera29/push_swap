@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
+/*   By: clcarrer <clcarrer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 08:05:55 by chloeplatt        #+#    #+#             */
-/*   Updated: 2022/10/24 10:29:06 by chloeplatt       ###   ########.fr       */
+/*   Updated: 2022/10/26 11:31:38 by clcarrer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ void	free_node(t_push *p, t_node **list_a, t_node **list_b)
 
 void	error_msg(t_push *p, t_node **list_a, t_node **list_b)
 {
-    free_node(p, list_a, list_b);
-    exit (write(1, "Error\n", 6));
+	free_node(p, list_a, list_b);
+	exit (write(1, "Error\n", 6));
 }
 
 int	ft_atoi(t_push *p, const char *str)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
+/*   By: clcarrer <clcarrer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:30:41 by clcarre           #+#    #+#             */
-/*   Updated: 2022/10/25 15:53:34 by chloeplatt       ###   ########.fr       */
+/*   Updated: 2022/10/26 12:19:00 by clcarrer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct push_swap
 	int		x;
 	int		d;
 	int		steps;
+	int		stop;
 	int		rot;
 	int		rev;
 	int		min;
