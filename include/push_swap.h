@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clcarrer <clcarrer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:30:41 by clcarre           #+#    #+#             */
-/*   Updated: 2022/10/26 12:19:00 by clcarrer         ###   ########.fr       */
+/*   Updated: 2022/10/27 18:44:30 by chloeplatt       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,23 +29,17 @@ typedef struct push_swap
 {
 	t_node	*list_a;
 	t_node	*list_b;
-	t_node	*curr;
-	t_node	*aux;
 	t_node	*last;
 	t_node	*last_b;
+	t_node	*curr;
 	char	**number;
-	int		unsorted;
 	int		i;
 	int		n;
-	int		x;
-	int		d;
 	int		steps;
-	int		stop;
 	int		rot;
 	int		rev;
 	int		min;
 	int		max;
-	int		mid;
 	int		mp;
 }			t_push;
 
@@ -55,6 +49,7 @@ void	error_msg(t_push *p, t_node **list_a, t_node **list_b);
 int		ft_atoi(t_push *p, const char *str);
 
 //		split
+void	free_split(char **s);
 char	**ft_split(char const *s, char c);
 
 //		check_in
@@ -75,6 +70,6 @@ int		is_shortest_b(t_push *p, t_node **list, t_node **last);
 int		is_shortest_a(t_push *p, int max, t_node **list, t_node **last);
 void	push_stack_b(t_push *p, t_node **list_a, t_node **list_b);
 void	sort_stack_a(t_push *p, t_node **list_a, t_node **list_b);
-void	long_stack(t_push *p, t_node **list_a, t_node **list_b);
+void	long_stack(t_push *p, int x, t_node **list_a, t_node **list_b);
 
 #endif

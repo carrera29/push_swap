@@ -6,7 +6,7 @@
 /*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 12:12:53 by clcarrer          #+#    #+#             */
-/*   Updated: 2022/10/24 12:50:20 by chloeplatt       ###   ########.fr       */
+/*   Updated: 2022/10/27 13:23:44 by chloeplatt       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,22 +39,25 @@ void	simplify_num(int i, t_node **list)
 
 int	check_numbers(t_push *p, t_node **list)
 {
-	p->unsorted = 1;
-	p->curr = *list;
-	while (p->curr != NULL)
+	t_node	*curr;
+	t_node	*aux;
+
+	p->n = 1;
+	curr = *list;
+	while (curr != NULL)
 	{	
-		p->aux = p->curr->next;
-		while (p->aux != NULL)
+		aux = curr->next;
+		while (aux != NULL)
 		{
-			if (p->curr->x == p->aux->x)
+			if (curr->x == aux->x)
 				error_msg(p, list, &p->list_b);
-			if (p->curr->x > p->aux->x)
-				p->unsorted = 0;
-			p->aux = p->aux->next;
+			if (curr->x > aux->x)
+				p->n = 0;
+			aux = aux->next;
 		}
-		p->curr = p->curr->next;
+		curr = curr->next;
 	}
-	return (p->unsorted);
+	return (p->n);
 }
 
 void	insert_beginning_node(t_node **list, int value, int position)
@@ -108,6 +111,7 @@ void	check_in(t_push *p, char **argv)
 		p->i = 0;
 		while (p->number[p->i])
 			insert_end_node(&p->list_a, ft_atoi(p, p->number[p->i++]), 0);
+		free_split(p->number);
 	}
 	p->i = 0;
 	p->last = p->list_a;

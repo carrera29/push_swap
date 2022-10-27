@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clcarrer <clcarrer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 08:05:55 by chloeplatt        #+#    #+#             */
-/*   Updated: 2022/10/26 11:31:38 by clcarrer         ###   ########.fr       */
+/*   Updated: 2022/10/26 18:51:43 by chloeplatt       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,20 @@
 
 void	free_node(t_push *p, t_node **list_a, t_node **list_b)
 {
-	p->curr = *list_a;
+	t_node	*aux;
+	t_node	*curr;
+
+	curr = *list_a;
 	p->i = 2;
 	while (p->i--)
 	{
-		while (p->curr != NULL)
+		while (curr != NULL)
 		{
-			p->aux = p->curr;
-			p->curr = p->curr->next;
-			free(p->aux);
+			aux = curr;
+			curr = curr->next;
+			free(aux);
 		}
-		p->curr = *list_b;
+		curr = *list_b;
 	}
 	*list_a = NULL;
 	*list_b = NULL;

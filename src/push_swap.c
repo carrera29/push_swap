@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clcarrer <clcarrer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: chloeplatt <chloeplatt@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 09:21:32 by clcarre           #+#    #+#             */
-/*   Updated: 2022/10/26 12:13:46 by clcarrer         ###   ########.fr       */
+/*   Updated: 2022/10/27 19:11:24 by chloeplatt       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,20 +53,19 @@ void	five_numbers(t_push *p, t_node **list_a, t_node **list_b, t_node **last)
 
 void	push_swap(t_push *p, t_node **list_a, t_node **list_b)
 {
+	int	x;
+
 	simplify_num((p->i - 1), list_a);
-	p->last = *list_a;
-	while (p->last->next != NULL)
-		p->last = p->last->next;
 	if (p->i == 2 || p->i == 3)
 		three_numbers(list_a, &p->last, 0);
 	else if (p->i == 4 || p->i == 5)
 		five_numbers(p, list_a, list_b, &p->last);
 	else
 	{
-		p->d = 2;
+		x = 2;
 		if (p->i > 100)
-			p->d = 4;
-		long_stack(p, list_a, list_b);
+			x = 7;
+		long_stack(p, x, list_a, list_b);
 	}
 }
 
@@ -80,6 +79,18 @@ int	main(int argc, char	**argv)
 		check_in(&p, argv);
 	if (check_numbers(&p, &p.list_a) == 0)
 		push_swap(&p, &p.list_a, &p.list_b);
+	p.curr = p.list_a;
+	while (p.curr->next != NULL)
+	{
+		printf("A -> %d\n", p.curr->p);
+		p.curr = p.curr->next;
+	}
+	p.curr = p.list_b;
+	while (p.curr->next != NULL)
+	{
+		printf("B -> %d\n", p.curr->p);
+		p.curr = p.curr->next;
+	}
 	free_node(&p, &p.list_a, &p.list_b);
 	return (0);
 }
